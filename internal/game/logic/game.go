@@ -19,6 +19,72 @@ var (
 		"сумерки",
 		"ветер",
 	}
+
+	hangmanStages = []string{
+		`
+  +---+
+  |   |
+      |
+      |
+      |
+      |
+=========
+`,
+		`
+  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+=========
+`,
+		`
+  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+=========
+`,
+		`
+  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+=========
+`,
+		`
+  +---+
+  |   |
+  O   |
+ /|\  |
+      |
+      |
+=========
+`,
+		`
+  +---+
+  |   |
+  O   |
+ /|\  |
+ /    |
+      |
+=========
+`,
+		`
+  +---+
+  |   |
+  O   |
+ /|\  |
+ / \  |
+      |
+=========
+`,
+	}
 )
 
 const endGame = 6 // Количество допустимых ошибок
@@ -33,12 +99,17 @@ type Game struct {
 	result        string
 }
 
-func (game *Game) RandomWord() string {
+func (game *Game) randomWord() string {
 	game.hiddenWord = arrOfWords[rand.Intn(len(arrOfWords))]
 	return game.hiddenWord
 }
 
-func (game *Game) CheckSymbol(word string) {
+func (game *Game) printHangmanStages() {
+	fmt.Println("Hangman Stages:", hangmanStages[game.counterErrors])
+
+}
+
+func (game *Game) checkSymbol(word string) {
 
 	runes := []rune(word)
 	scanRunes := []rune(game.scanSymbol)[0]
@@ -58,13 +129,15 @@ func (game *Game) CheckSymbol(word string) {
 	if !temp {
 		game.counterErrors++
 		fmt.Println("Каунтер ошибок:", game.counterErrors) // todo: Remove
+		game.printHangmanStages()
 	}
 
 	game.result = string(runesResult)
 }
 
 func (game *Game) StartGame() {
-	word := game.RandomWord()
+
+	word := game.randomWord()
 
 	for i := 0; i < len([]rune(word)); i++ {
 		game.result += "_"
@@ -75,7 +148,7 @@ func (game *Game) StartGame() {
 	for {
 		fmt.Println("Введите символ")
 		fmt.Scan(&game.scanSymbol)
-		game.CheckSymbol(word)
+		game.checkSymbol(word)
 
 		if game.counter == len([]rune(word)) { // проверка победы
 			fmt.Println("Вы выиграли")
@@ -86,7 +159,6 @@ func (game *Game) StartGame() {
 			fmt.Println("Вы повешены")
 			return
 		}
-
 	}
 
 }
