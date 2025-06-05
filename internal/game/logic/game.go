@@ -76,14 +76,17 @@ func (game *Game) StartGame() {
 		fmt.Println("Введите символ")
 		fmt.Scan(&game.scanSymbol)
 		game.CheckSymbol(word)
+
 		if game.counter == len([]rune(word)) { // проверка победы
 			fmt.Println("Вы выиграли")
 			return
 		}
+
 		if game.counterErrors == endGame {
 			fmt.Println("Вы повешены")
 			return
 		}
+
 	}
 
 }
