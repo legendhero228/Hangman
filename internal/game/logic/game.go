@@ -2,7 +2,6 @@ package logic
 
 import (
 	"fmt"
-	"hangman/internal/game"
 	"math/rand"
 )
 
@@ -90,9 +89,8 @@ var (
 const endGame = 6 // Количество допустимых ошибок
 
 type Game struct {
-	game.Word
-	game.Player
-	counter       int
+	//game.Word
+	//game.Player
 	counterErrors int
 	hiddenWord    string
 	scanSymbol    string
@@ -121,7 +119,6 @@ func (game *Game) checkSymbol(word string) {
 			runesResult[i] = r
 			fmt.Println("Вы угадали букву: ", game.scanSymbol)
 			fmt.Println("Вот угаданные буквы:", string(runesResult))
-			game.counter++
 			temp = true
 		}
 	}
@@ -150,7 +147,7 @@ func (game *Game) StartGame() {
 		fmt.Scan(&game.scanSymbol)
 		game.checkSymbol(word)
 
-		if game.counter == len([]rune(word)) { // проверка победы
+		if game.result == word { // проверка победы
 			fmt.Println("Вы выиграли")
 			return
 		}
