@@ -89,12 +89,11 @@ var (
 const endGame = 6 // Количество допустимых ошибок
 
 type Game struct {
-	//game.Word
-	//game.Player
 	counterErrors int
 	hiddenWord    string
 	scanSymbol    string
 	result        string
+	symbolCorrect bool
 }
 
 func (game *Game) randomWord() string {
@@ -112,50 +111,65 @@ func (game *Game) checkSymbol(word string) {
 	runes := []rune(word)
 	scanRunes := []rune(game.scanSymbol)[0]
 	runesResult := []rune(game.result)
-	temp := false
+	game.symbolCorrect = false
 
 	for i, r := range runes {
 		if r == scanRunes {
 			runesResult[i] = r
-			fmt.Println("Вы угадали букву: ", game.scanSymbol)
-			fmt.Println("Вот угаданные буквы:", string(runesResult))
-			temp = true
+			game.symbolCorrect = true
 		}
 	}
 
-	if !temp {
+	if !game.symbolCorrect && game.counterErrors < endGame {
 		game.counterErrors++
-		fmt.Println("Каунтер ошибок:", game.counterErrors) // todo: Remove
-		game.printHangmanStages()
 	}
 
 	game.result = string(runesResult)
 }
 
-func (game *Game) StartGame() {
-
-	word := game.randomWord()
-
-	for i := 0; i < len([]rune(word)); i++ {
-		game.result += "_"
+func (game *Game) checkWin() {
+	if game.result == game.hiddenWord { // проверка победы
+		fmt.Printf("\n\n\nВы выиграли\n\n\n")
 	}
 
+	if game.counterErrors == endGame {
+		fmt.Println("Вы повешены")
+	}
+
+}
+
+func (game *Game) fillResult() {
+	for i := 0; i < len([]rune(game.hiddenWord)); i++ {
+		game.result += "_"
+	}
+}
+
+func (game *Game) printResult() {
+	//fmt.Println("Правильны символ", game.symbolCorrect)
+	if game.symbolCorrect {
+		fmt.Println("Вы угадали букву. Вот слово ")
+		fmt.Println(game.result)
+	} else if !game.symbolCorrect {
+		fmt.Println("Вы не угадали букву")
+		fmt.Printf("У вас %d ошибок\n", game.counterErrors)
+		game.printHangmanStages()
+	}
+
+}
+
+func (game *Game) StartGame() {
+
+	game.hiddenWord = game.randomWord()
+	fmt.Println("Правильное слово", game.hiddenWord)
+	game.fillResult()
 	fmt.Println(game.result)
 
 	for {
 		fmt.Println("Введите символ")
 		fmt.Scan(&game.scanSymbol)
-		game.checkSymbol(word)
-
-		if game.result == word { // проверка победы
-			fmt.Println("Вы выиграли")
-			return
-		}
-
-		if game.counterErrors == endGame {
-			fmt.Println("Вы повешены")
-			return
-		}
+		game.checkSymbol(game.hiddenWord)
+		game.checkWin()
+		game.printResult()
 	}
 
 }
