@@ -145,7 +145,6 @@ func (game *Game) fillResult() {
 }
 
 func (game *Game) printResult() {
-	//fmt.Println("Правильны символ", game.symbolCorrect)
 	if game.symbolCorrect {
 		fmt.Println("Вы угадали букву. Вот слово ")
 		fmt.Println(game.result)
